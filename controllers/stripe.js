@@ -24,8 +24,8 @@ const stripeSession = async (planID) => {
         },
       ],
       mode: "subscription",
-      success_url: "http://localhost:5173/success",
-      cancel_url: "http://localhost:5173/cancel",
+      success_url: "https://dialects.vercel.app/success",
+      cancel_url: "https://dialects.vercel.app/cancel",
     });
     return session;
   } catch (error) {
