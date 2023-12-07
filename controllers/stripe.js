@@ -11,7 +11,7 @@ const [basic, pro, master] = [
 ];
 
 
-const stripeSession = async (planID, user) => {
+const stripeSession = async (planID, customerID) => {
   try {
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
@@ -25,7 +25,7 @@ const stripeSession = async (planID, user) => {
       mode: "subscription",
       success_url: "https://dialects.vercel.app",
       cancel_url: "https://dialects.vercel.app/subscriptions",
-      customer : user.customerID
+      customer : customerID,
     });
     console.log(user);
     return session;
@@ -37,22 +37,16 @@ const stripeSession = async (planID, user) => {
 
 export const createCheckoutSession = async (req, res) => {
   const { plan, customerID } = req.body;
-  const user = await User.findOne({ _id: customerID });
+  // const user = await User.findOne({ _id: customerID });
   let planID = null;
   if (plan == 15.99) planID = basic;
   else if (plan == 24.99) planID = pro;
   else if (plan == 34.99) planID = master;
 
   try {
-    const session = await stripeSession(planID, user);
+    const session = await stripeSession(planID, customerID);
 
-    const updatedUser = await User.findOneAndUpdate(
-      { _id: customerID }, // Assuming your user ID field is _id
-      { $set: { subscriptionID: session.id } }, // Update the user's subscription plan
-      { new: true } // Return the updated user object
-    );
-
-    return res.json({ session: session, user: updatedUser });
+    return res.json({ session: session});
   } catch (error) {
     res.send(error.message);
   }
