@@ -2,6 +2,10 @@ import Jwt from "jsonwebtoken";
 import User from "../model/user.js";
 import bcrypt from "bcrypt";
 import stripe from "../utills/stripe.js";
+import dotenv from "dotenv";
+
+
+dotenv.config();
 
 export const register = async (req, res) => {
   try {
@@ -12,6 +16,7 @@ export const register = async (req, res) => {
 
     const customer = await stripe.customers.create({
       email: email,
+      name: fullName,
     }, {
       apiKey: process.env.STRIPE_SECRET_KEY,
     })
@@ -37,7 +42,15 @@ export const login = async (req, res) => {
     const { email, password } = req.body;
 
     const user = await User.findOne({ email: email });
-
+    const subscription = await stripe.subscriptions.list({
+      customer: user.customerID,
+      status: 'all',
+      expand: ['data.default_payment_method'],
+    },
+      {
+        apiKey: process.env.STRIPE_SECRET_KEY,
+      }
+    )
     if (!user) {
       return res.status(400).json({ message: "User does not exist" });
     }
@@ -48,9 +61,15 @@ export const login = async (req, res) => {
       return res.status(400).json({ message: "Incorrect Password" });
     }
 
+    let plan = ""
+    if(!subscription.data.length){
+      plan = ""
+    }
+
+    plan = subscription.data[0].plan.nickname
     const token = Jwt.sign({ id: user._id }, process.env.JWT_SECRET);
     delete user.password;
-    res.status(200).json({ user, token });
+    res.status(200).json({ user, token, plan });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
