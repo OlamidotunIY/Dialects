@@ -63,7 +63,7 @@ export const login = async (req, res) => {
 
     let plan = ""
     if(!subscription.data.length){
-      plan = ""
+      plan = "free"
     }
 
     plan = subscription.data[0].plan.nickname
