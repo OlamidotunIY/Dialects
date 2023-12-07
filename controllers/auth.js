@@ -1,6 +1,7 @@
 import Jwt from "jsonwebtoken";
 import User from "../model/user.js";
 import bcrypt from "bcrypt";
+import stripe from "../utills/stripe.js";
 
 export const register = async (req, res) => {
   try {
@@ -9,10 +10,17 @@ export const register = async (req, res) => {
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(password, salt);
 
+    const customer = await stripe.customers.create({
+      email: email,
+    }, {
+      apiKey: process.env.STRIPE_SECRET_KEY,
+    })
+
     const newUser = new User({
       fullName: fullName,
       email: email,
       password: hashedPassword,
+      customerID: customer.id,
     });
 
     const savedUser = await newUser.save();

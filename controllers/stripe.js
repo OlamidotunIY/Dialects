@@ -1,4 +1,4 @@
-import Stripe from "stripe";
+import stripe from "../utills/stripe.js";
 import User from "../model/user.js";
 import dotenv from "dotenv";
 
@@ -10,7 +10,6 @@ const [basic, pro, master] = [
   "price_1OIAyNJx4oWbweykyZaHnkg8",
 ];
 
-const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
 const stripeSession = async (planID) => {
   try {
