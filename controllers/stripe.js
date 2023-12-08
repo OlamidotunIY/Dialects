@@ -27,7 +27,7 @@ const stripeSession = async (planID, customerID) => {
       cancel_url: "https://dialects.vercel.app/subscriptions",
       customer : customerID,
     });
-    console.log(user);
+    // console.log(user);
     return session;
   } catch (error) {
     console.log(error);
