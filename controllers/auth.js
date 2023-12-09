@@ -90,19 +90,14 @@ export const login = async (req, res) => {
 
 export const update = async (req, res) => {
   const { voice_id } = req.body;
-  const { id } = req.params;
-  console.log(voice_id);
-  console.log(id);
-  try {
-    const user = await User.findById(id, {
-      $set: {
-        voice_id: voice_id,
-      },
-    });
+  const { id } = req.body;
 
-    if (!user) {
-      return res.status(400).json({ message: "User does not exist" });
-    }
+  try {
+    const user = await User.findOneAndUpdate(
+      { _id: id },
+      { voice_id: voice_id },
+      { new: true }
+    );
 
     return res.status(200).json({ success: true, user: user });
   } catch (error) {

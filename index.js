@@ -26,7 +26,7 @@ app.use(cors());
 
 app.post("/login", login);
 app.post("/register", register);
-app.put("/update/:id", update);
+app.put("/update", update);
 app.post("/api/checkout", createCheckoutSession);
 
 const Port = process.env.PORT;
