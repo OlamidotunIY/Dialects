@@ -10,7 +10,6 @@ const [basic, pro, master] = [
   "price_1OIAyNJx4oWbweykyZaHnkg8",
 ];
 
-
 const stripeSession = async (planID, customerID) => {
   try {
     const session = await stripe.checkout.sessions.create({
@@ -25,7 +24,7 @@ const stripeSession = async (planID, customerID) => {
       mode: "subscription",
       success_url: "https://dialects.vercel.app",
       cancel_url: "https://dialects.vercel.app/subscriptions",
-      customer : customerID,
+      customer: customerID,
     });
     // console.log(user);
     return session;
@@ -44,8 +43,17 @@ export const createCheckoutSession = async (req, res) => {
 
   try {
     const session = await stripeSession(planID, customerID);
-
-    return res.json({ session: session});
+    const subscription = await stripe.subscriptions.list(
+      {
+        customer: customerID,
+        status: "all",
+        expand: ["data.default_payment_method"],
+      },
+      {
+        apiKey: process.env.STRIPE_SECRET_KEY,
+      }
+    );
+    return res.json({ session: session, subscription: subscription });
   } catch (error) {
     res.send(error.message);
   }
