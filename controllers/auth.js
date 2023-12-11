@@ -65,6 +65,7 @@ export const login = async (req, res) => {
     }
 
     let plan = null;
+    console.log(subscription.data.length);
     if (!subscription.data.length) {
       plan = "free";
     }

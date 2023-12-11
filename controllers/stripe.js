@@ -37,7 +37,6 @@ const stripeSession = async (planID, customerID) => {
 
 export const createCheckoutSession = async (req, res) => {
   const { plan, customerID } = req.body;
-  // const user = await User.findOne({ _id: customerID });
   let planID = null;
   if (plan == 15.99) planID = basic;
   else if (plan == 24.99) planID = pro;
