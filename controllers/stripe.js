@@ -55,7 +55,7 @@ export const getUserPlan = async (req, res) => {
   try {
     const subscription = await stripe.subscriptions.list(
       {
-        customer: customerID,
+        customer: Number(customerID),
         status: "all",
         expand: ["data.default_payment_method"],
       },
