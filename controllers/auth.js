@@ -44,16 +44,7 @@ export const login = async (req, res) => {
     const { email, password } = req.body;
 
     const user = await User.findOne({ email: email });
-    const subscription = await stripe.subscriptions.list(
-      {
-        customer: user.customerID,
-        status: "all",
-        expand: ["data.default_payment_method"],
-      },
-      {
-        apiKey: process.env.STRIPE_SECRET_KEY,
-      }
-    );
+
     if (!user) {
       return res.status(400).json({ message: "User does not exist" });
     }
@@ -64,24 +55,9 @@ export const login = async (req, res) => {
       return res.status(400).json({ message: "Incorrect Password" });
     }
 
-    let plan = null;
-    console.log(subscription.data.length);
-    if (!subscription.data.length) {
-      plan = "free";
-    }
-
-    if (subscription.data.length) {
-      if (subscription.data[0].plan.nickname == "Basic") {
-        plan = "basic";
-      } else if (subscription.data[0].plan.nickname == "Pro") {
-        plan = "pro";
-      } else if (subscription.data[0].plan.nickname == "Master") {
-        plan = "master";
-      }
-    }
     const token = Jwt.sign({ id: user._id }, process.env.JWT_SECRET);
     delete user.password;
-    res.status(200).json({ user, token, plan });
+    res.status(200).json({ user, token });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
