@@ -43,6 +43,16 @@ export const createCheckoutSession = async (req, res) => {
 
   try {
     const session = await stripeSession(planID, customerID);
+    
+    return res.json({ session: session});
+  } catch (error) {
+    res.send(error.message);
+  }
+};
+
+export const getUserPlan = async (req, res) => {
+  const { customerID } = req.body;
+  try {
     const subscription = await stripe.subscriptions.list(
       {
         customer: customerID,
@@ -54,13 +64,17 @@ export const createCheckoutSession = async (req, res) => {
       }
     );
 
-    const planId = subscription.data[0].plan.id;
     let plan = null;
-    if (planId === basic) plan = "basic";
-    else if (planId === pro) plan = "pro";
-    else if (planId === master) plan = "master";
+    if (!subscription.data.length) plan = "free";
+    else {
+      const planId = subscription.data[0].plan.id;
+      const status = subscription.data[0].status;
+      if (planId === basic && status === "active") plan = "basic";
+      else if (planId === pro && status === "active") plan = "pro";
+      else if (planId === master && status === "active") plan = "master";
+    }
 
-    return res.json({ session: session, plan: plan });
+    return res.json({ plan: plan });
   } catch (error) {
     res.send(error.message);
   }

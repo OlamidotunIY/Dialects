@@ -10,7 +10,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { login, register, update } from "./controllers/auth.js";
 import moment from "moment/moment.js";
-import { createCheckoutSession } from "./controllers/stripe.js";
+import { createCheckoutSession, getUserPlan } from "./controllers/stripe.js";
 
 dotenv.config();
 
@@ -28,6 +28,7 @@ app.post("/login", login);
 app.post("/register", register);
 app.put("/update", update);
 app.post("/api/checkout", createCheckoutSession);
+app.get("/api/getplan", getUserPlan)
 
 const Port = process.env.PORT;
 mongoose
