@@ -74,7 +74,7 @@ export const getUserPlan = async (req, res) => {
       else if (planId === master && status === "active") plan = "master";
     }
 
-    return res.json({ plan: plan, planId: subscription.data[0].plan.id });
+    return res.json({ plan: plan, planId: subscription.data[0].plan.id, status: subscription.data[0].status });
   } catch (error) {
     res.send(error.message);
   }
