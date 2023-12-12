@@ -68,7 +68,7 @@ export const getUserPlan = async (req, res) => {
     if (!subscription.data.length) plan = "free";
     else {
       const planId = subscription.data[0].plan.id;
-      const status = subscription.data[0].status;
+      const status = subscription.data[0].plan.status;
       if (planId === basic && status === "active") plan = "basic";
       else if (planId === pro && status === "active") plan = "pro";
       else if (planId === master && status === "active") plan = "master";
