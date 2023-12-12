@@ -56,7 +56,6 @@ export const getUserPlan = async (req, res) => {
     const subscription = await stripe.subscriptions.list(
       {
         customer: customerID,
-        status: "all",
         limit: 1,
       },
       {
