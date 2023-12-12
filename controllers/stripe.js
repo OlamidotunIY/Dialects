@@ -53,7 +53,14 @@ export const createCheckoutSession = async (req, res) => {
         apiKey: process.env.STRIPE_SECRET_KEY,
       }
     );
-    return res.json({ session: session, subscription: subscription });
+
+    const planId = subscription.data[0].plan.id;
+    let plan = null;
+    if (planId === basic) plan = "basic";
+    else if (planId === pro) plan = "pro";
+    else if (planId === master) plan = "master";
+
+    return res.json({ session: session, plan: plan });
   } catch (error) {
     res.send(error.message);
   }
