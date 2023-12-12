@@ -57,6 +57,7 @@ export const getUserPlan = async (req, res) => {
       {
         customer: customerID,
         status: "all",
+        limit: 1,
       },
       {
         apiKey: process.env.STRIPE_SECRET_KEY,
