@@ -66,13 +66,13 @@ export const login = async (req, res) => {
 // Update User
 
 export const update = async (req, res) => {
-  const { voice_Id } = req.body;
+  const { voice_id } = req.body;
   const { id } = req.body;
 
   try {
     const user = await User.findOneAndUpdate(
       { _id: id },
-      { voice_id: voice_Id },
+      { voice_id: voice_id },
       { new: true }
     );
 
