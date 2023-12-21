@@ -51,12 +51,13 @@ export const createCheckoutSession = async (req, res) => {
 };
 
 export const getUserPlan = async (req, res) => {
-  const { customerID } = req.body;
+  const customerId = req.query.customerId
+  console.log(customerId);
   try {
     const subscription = await stripe.subscriptions.list(
       {
-        customer: customerID,
-        limit: 1,
+        customer: customerId,
+        // limit: 1,
       },
       {
         apiKey: process.env.STRIPE_SECRET_KEY,
@@ -64,6 +65,7 @@ export const getUserPlan = async (req, res) => {
     );
 
     let plan = null;
+    console.log(subscription.data);
     if (!subscription.data.length) plan = "free";
     else {
       const planId = subscription.data[0].plan.id;
